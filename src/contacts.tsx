@@ -1,10 +1,11 @@
 import localforage from "localforage";
 import { matchSorter } from "match-sorter";
 import sortBy from "sort-by";
+import { ContactDTO } from './models/ContactDTO';
 
-export async function getContacts(query) {
+export async function getContacts(query?: string) {
   await fakeNetwork(`getContacts:${query}`);
-  let contacts = await localforage.getItem("contacts");
+  let contacts: ContactDTO[] = await localforage.getItem("contacts");
   if (!contacts) contacts = [];
   if (query) {
     contacts = matchSorter(contacts, query, { keys: ["first", "last"] });
@@ -15,7 +16,7 @@ export async function getContacts(query) {
 export async function createContact() {
   await fakeNetwork();
   let id = Math.random().toString(36).substring(2, 9);
-  let contact = { id, createdAt: Date.now() };
+  let contact: ContactDTO = { id, favorite: false, createdAt: Date.now() };
   let contacts = await getContacts();
   contacts.unshift(contact);
   await set(contacts);
@@ -33,7 +34,7 @@ export async function updateContact(id, updates) {
   await fakeNetwork();
   let contacts = await localforage.getItem("contacts");
   let contact = contacts.find(contact => contact.id === id);
-  if (!contact) throw new Error("No contact found for", id);
+  if (!contact) throw new Error(`No contact found for ${id}`);
   Object.assign(contact, updates);
   await set(contacts);
   return contact;
@@ -54,10 +55,10 @@ function set(contacts) {
   return localforage.setItem("contacts", contacts);
 }
 
-// fake a cache so we don't slow down stuff we've already seen
+// fake a cache, so we don't slow down stuff we've already seen
 let fakeCache = {};
 
-async function fakeNetwork(key) {
+async function fakeNetwork(key?: string) {
   if (!key) {
     fakeCache = {};
   }

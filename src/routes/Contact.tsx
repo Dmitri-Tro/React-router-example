@@ -1,26 +1,26 @@
-import { Form } from 'react-router-dom';
+import { Form, LoaderFunction, useLoaderData } from 'react-router-dom';
+import { getContact } from '../contacts';
+import { ContactDTO } from '../models/ContactDTO';
+
+export const contactLoader: LoaderFunction  = async ({ params }): Promise<ContactDTO> => {
+  return await getContact(params.contactId);
+}
 
 export const Contact = () => {
-  const contact = {
-    id: 1,
-    first: "Your",
-    last: "Name",
-    avatar: "https://robohash.org/you.png?size=200x200",
-    twitter: "your_handle",
-    notes: "Some notes",
-    favorite: true,
-  };
+
+  const contact = useLoaderData() as ContactDTO;
 
   return (
     <div id="contact">
       <div>
         <img
           key={contact.avatar}
+          alt={'contactAvatar'}
           src={
             contact.avatar ||
             `https://robohash.org/${contact.id}.png?size=200x200`
           }
-        />
+         />
       </div>
 
       <div>

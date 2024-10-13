@@ -1,14 +1,18 @@
-import { Link, LoaderFunction, Outlet, useLoaderData } from 'react-router-dom';
-import { getContacts } from '../contacts.js';
-import { Contact } from '../models/Contact';
+import { ActionFunction, Form, Link, LoaderFunction, Outlet, useLoaderData } from 'react-router-dom';
+import { createContact, getContacts } from '../contacts.js';
+import { ContactDTO } from '../models/ContactDTO';
 
-export const loader: LoaderFunction = async (): Promise<Contact[]> => {
-  return await getContacts(undefined);
+export const rootLoader: LoaderFunction = async (): Promise<ContactDTO[]> => {
+  return await getContacts();
+}
+
+export const rootAction: ActionFunction = async (): Promise<ContactDTO> => {
+  return await createContact();
 }
 
 export const Root = () => {
 
-  const contacts = useLoaderData() as Contact[];
+  const contacts = useLoaderData() as ContactDTO[];
 
   return (
     <>
@@ -33,9 +37,9 @@ export const Root = () => {
               aria-live="polite"
             ></div>
           </form>
-          <form method="post">
+          <Form method="post">
             <button type="submit">New</button>
-          </form>
+          </Form>
         </div>
         <nav>
           {contacts.length ? (
