@@ -1,4 +1,4 @@
-import { ActionFunction, Form, Link, LoaderFunction, Outlet, useLoaderData } from 'react-router-dom';
+import { ActionFunction, Form, Link, LoaderFunction, NavLink, Outlet, useLoaderData } from 'react-router-dom';
 import { createContact, getContacts } from '../contacts.js';
 import { ContactDTO } from '../models/ContactDTO';
 
@@ -46,7 +46,16 @@ export const Root = () => {
             <ul>
               {contacts.map((contact) => (
                 <li key={contact.id}>
-                  <Link to={`contacts/${contact.id}`}>
+                  <NavLink
+                    to={`contacts/${contact.id}`}
+                    className={({ isActive, isPending }) =>
+                      isActive
+                      ? "active"
+                      : isPending
+                        ? "pending"
+                        : ""
+                    }
+                  >
                     {contact.first || contact.last ? (
                       <>
                         {contact.first} {contact.last}
@@ -55,7 +64,7 @@ export const Root = () => {
                        <i>No Name</i>
                      )}{" "}
                     {contact.favorite && <span>★</span>}
-                  </Link>
+                  </NavLink>
                 </li>
               ))}
             </ul>
