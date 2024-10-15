@@ -4,6 +4,7 @@ import './index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import { ErrorPage } from './ErrorPage';
 import { Contact, contactLoader } from './routes/Contact';
+import { destroyAction } from './routes/Destroy';
 import { editAction, EditContact } from './routes/Edit';
 import { Root, rootLoader, rootAction } from './routes/Root';
 
@@ -25,6 +26,11 @@ const router = createBrowserRouter([
         element: <EditContact />,
         loader: contactLoader,
         action: editAction,
+      },
+      {
+        path: "contacts/:contactId/destroy",
+        action: destroyAction,
+        errorElement: <div>Oops! There was an error.</div>,
       },
     ],
   },
