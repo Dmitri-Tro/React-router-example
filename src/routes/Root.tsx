@@ -11,8 +11,10 @@ import {
 import { createContact, getContacts } from '../contacts.js';
 import { ContactDTO } from '../models/ContactDTO';
 
-export const rootLoader: LoaderFunction = async (): Promise<ContactDTO[]> => {
-  return await getContacts();
+export const rootLoader: LoaderFunction = async ({ request }): Promise<ContactDTO[]> => {
+  const url = new URL(request.url);
+  const q = url.searchParams.get("q");
+  return await getContacts(q);
 }
 
 export const rootAction: ActionFunction = async (): Promise<ContactDTO> => {
@@ -29,7 +31,7 @@ export const Root = () => {
       <div id="sidebar">
         <h1>React Router Contacts</h1>
         <div>
-          <form id="search-form" role="search">
+          <Form id="search-form" role="search">
             <input
               id="q"
               aria-label="Search contacts"
@@ -46,7 +48,7 @@ export const Root = () => {
               className="sr-only"
               aria-live="polite"
             ></div>
-          </form>
+          </Form>
           <Form method="post">
             <button type="submit">New</button>
           </Form>
