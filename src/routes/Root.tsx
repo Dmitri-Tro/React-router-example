@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   ActionFunction,
   Form,
@@ -11,10 +12,11 @@ import {
 import { createContact, getContacts } from '../contacts.js';
 import { ContactDTO } from '../models/ContactDTO';
 
-export const rootLoader: LoaderFunction = async ({ request }): Promise<ContactDTO[]> => {
+export const rootLoader: LoaderFunction = async ({ request }): Promise<{ contacts: ContactDTO[], q: string }> => {
   const url = new URL(request.url);
-  const q = url.searchParams.get("q");
-  return await getContacts(q);
+  const q = url.searchParams.get("q") || "";
+  const contacts = await getContacts(q);
+  return {contacts, q}
 }
 
 export const rootAction: ActionFunction = async (): Promise<ContactDTO> => {
@@ -23,8 +25,13 @@ export const rootAction: ActionFunction = async (): Promise<ContactDTO> => {
 
 export const Root = () => {
 
-  const contacts = useLoaderData() as ContactDTO[];
+  const { contacts, q } = useLoaderData() as ContactDTO[];
+  const [query, setQuery] = useState<string>(q);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    setQuery(q);
+  }, [q]);
 
   return (
     <>
@@ -38,6 +45,10 @@ export const Root = () => {
               placeholder="Search"
               type="search"
               name="q"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+              }}
             />
             <div
               id="search-spinner"
