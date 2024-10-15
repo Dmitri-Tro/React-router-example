@@ -1,4 +1,13 @@
-import { ActionFunction, Form, Link, LoaderFunction, NavLink, Outlet, useLoaderData } from 'react-router-dom';
+import {
+  ActionFunction,
+  Form,
+  Link,
+  LoaderFunction,
+  NavLink,
+  Outlet,
+  useLoaderData,
+  useNavigation
+} from 'react-router-dom';
 import { createContact, getContacts } from '../contacts.js';
 import { ContactDTO } from '../models/ContactDTO';
 
@@ -13,6 +22,7 @@ export const rootAction: ActionFunction = async (): Promise<ContactDTO> => {
 export const Root = () => {
 
   const contacts = useLoaderData() as ContactDTO[];
+  const navigation = useNavigation();
 
   return (
     <>
@@ -75,7 +85,11 @@ export const Root = () => {
            )}
         </nav>
       </div>
-      <div id="detail">
+      <div id="detail"
+           className={
+             navigation.state === "loading" ? "loading" : ""
+           }
+      >
         <Outlet />
       </div>
     </>
