@@ -30,6 +30,12 @@ export const Root = () => {
   const navigation = useNavigation();
   const submit = useSubmit();
 
+  const searching =
+    navigation.location &&
+    new URLSearchParams(navigation.location.search).has(
+      "q"
+    );
+
   useEffect(() => {
     setQuery(q);
   }, [q]);
@@ -44,6 +50,7 @@ export const Root = () => {
               id="q"
               aria-label="Search contacts"
               placeholder="Search"
+              className={searching ? "loading" : ""}
               type="search"
               name="q"
               value={query}
@@ -54,7 +61,7 @@ export const Root = () => {
             <div
               id="search-spinner"
               aria-hidden
-              hidden={true}
+              hidden={!searching}
             />
             <div
               className="sr-only"
