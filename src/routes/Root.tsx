@@ -55,8 +55,10 @@ export const Root = () => {
               name="q"
               value={query}
               onChange={(event) => {
-                submit(event.currentTarget.form);
-              }}
+                const isFirstSearch = q == null;
+                submit(event.currentTarget.form, {
+                  replace: !isFirstSearch,
+                });
             />
             <div
               id="search-spinner"
