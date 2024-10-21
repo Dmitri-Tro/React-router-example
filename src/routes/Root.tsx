@@ -7,7 +7,7 @@ import {
   NavLink,
   Outlet,
   useLoaderData,
-  useNavigation
+  useNavigation, useSubmit
 } from 'react-router-dom';
 import { createContact, getContacts } from '../contacts.js';
 import { ContactDTO } from '../models/ContactDTO';
@@ -28,6 +28,7 @@ export const Root = () => {
   const { contacts, q } = useLoaderData() as ContactDTO[];
   const [query, setQuery] = useState<string>(q);
   const navigation = useNavigation();
+  const submit = useSubmit();
 
   useEffect(() => {
     setQuery(q);
@@ -46,8 +47,8 @@ export const Root = () => {
               type="search"
               name="q"
               value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
+              onChange={(event) => {
+                submit(event.currentTarget.form);
               }}
             />
             <div
