@@ -3,7 +3,14 @@ import { getContact, updateContact } from '../contacts';
 import { ContactDTO } from '../models/ContactDTO';
 
 export const contactLoader: LoaderFunction  = async ({ params }): Promise<ContactDTO> => {
-  return await getContact(params.contactId);
+  const contact = await getContact(params.contactId);
+  if (!contact) {
+    throw new Response("", {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+  return contact;
 }
 
 export const contactAction: ActionFunction = async ({ request, params }) => {
