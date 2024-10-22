@@ -1,9 +1,16 @@
-import { Form, LoaderFunction, useLoaderData } from 'react-router-dom';
-import { getContact } from '../contacts';
+import { ActionFunction, Form, LoaderFunction, useFetcher, useLoaderData } from 'react-router-dom';
+import { getContact, updateContact } from '../contacts';
 import { ContactDTO } from '../models/ContactDTO';
 
 export const contactLoader: LoaderFunction  = async ({ params }): Promise<ContactDTO> => {
   return await getContact(params.contactId);
+}
+
+export const contactAction: ActionFunction = async ({ request, params }) => {
+  const formData = await request.formData();
+  return updateContact(params.contactId, {
+    favorite: formData.get("favorite") === "true",
+  });
 }
 
 export const Contact = () => {
@@ -74,9 +81,11 @@ export const Contact = () => {
 }
 
 const Favorite = ({ contact }) => {
+  const fetcher = useFetcher();
   const favorite = contact.favorite;
+
   return (
-    <Form method="post">
+    <fetcher.Form method="post">
       <button
         name="favorite"
         value={favorite ? "false" : "true"}
@@ -88,6 +97,6 @@ const Favorite = ({ contact }) => {
       >
         {favorite ? "★" : "☆"}
       </button>
-    </Form>
+    </fetcher.Form>
   );
 }
